@@ -86,23 +86,23 @@ function QuizA() {
                     <div className="col-md-4 col-12 pie-form">
                         <div className="mb-2">
                             <label className="form-label">Grade A:</label>
-                            <input onKeyPress={e => numberOnly(e)} onChange={onChangeInput} name="a" type="text" className="form-control" id="grade-a"/>
+                            <input onKeyPress={e => numberOnly(e)} value={pie.datasets[0].data[0]} onChange={onChangeInput} name="a" type="number" className="form-control" id="grade-a"/>
                         </div>
                         <div className="mb-2">
                             <label className="form-label">Grade B:</label>
-                            <input onKeyPress={e => numberOnly(e)} onChange={onChangeInput} name="b" type="text" className="form-control" id="grade-b"/>
+                            <input onKeyPress={e => numberOnly(e)} value={pie.datasets[0].data[1]} onChange={onChangeInput} name="b" type="number" className="form-control" id="grade-b"/>
                         </div>
                         <div className="mb-2">
                             <label className="form-label">Grade C:</label>
-                            <input onKeyPress={e => numberOnly(e)} onChange={onChangeInput} name="c" type="text" className="form-control" id="grade-c"/>
+                            <input onKeyPress={e => numberOnly(e)} value={pie.datasets[0].data[2]} onChange={onChangeInput} name="c" type="number" className="form-control" id="grade-c"/>
                         </div>
                         <div className="mb-2">
                             <label className="form-label">Grade D:</label>
-                            <input onKeyPress={e => numberOnly(e)} onChange={onChangeInput} name="d" type="text" className="form-control" id="grade-d"/>
+                            <input onKeyPress={e => numberOnly(e)} value={pie.datasets[0].data[3]} onChange={onChangeInput} name="d" type="number" className="form-control" id="grade-d"/>
                         </div>
                         <div className="mb-2">
                             <label className="form-label">Grade E:</label>
-                            <input onKeyPress={e => numberOnly(e)} onChange={onChangeInput} name="e" type="text" className="form-control" id="grade-e"/>
+                            <input onKeyPress={e => numberOnly(e)} value={pie.datasets[0].data[4]} onChange={onChangeInput} name="e" type="number" className="form-control" id="grade-e"/>
                         </div>
                     </div>
                     
