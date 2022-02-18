@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AlertMessage from './AlertMessage';
 import SearchViewModal from './SearchViewModal';
 
@@ -10,10 +10,6 @@ function QuizB() {
     const [message, setMessage] = useState({ show: false, type: null, text: "" });
     const [search, setSearch] = useState({ show: false, english: "", tagalog: "" });
 
-    useEffect(() => {
-        
-    },[])
-
     const onSave = () => {
         let newList = [];
         let error = false;
@@ -23,8 +19,8 @@ function QuizB() {
             setMessage({ show: true, type: 0, text: 'All fields are required' })
         }
 
-
         const list = localStorage.getItem('list');
+        
         if(list){
             newList = JSON.parse(list);
             // check if  english is already in the list
@@ -38,9 +34,8 @@ function QuizB() {
 
         if(!error){
             let store = newList.concat({ english: word.english.toLowerCase(), tagalog: word.tagalog.toLowerCase() });
-
             localStorage.setItem('list', JSON.stringify(store))
-    
+
             setWord({ english: '', tagalog: ''});
             setMessage({ show: true, type: 1, text: "Added new vocabulary" })
         }
@@ -50,18 +45,25 @@ function QuizB() {
     const onSearch = () => {
         let list = getListFromLocalStorage();
         
-        if(!list){
+        if(list.length === 0 || list === null)
+        {
             setMessage({ show: true, type: 0, text: "You do not have any vocabulary notes" })
         }
-
-        list.findIndex((item, index) => {
-            if(item.english == word.english){
-                setMessage({ show: false, type: 0,  text: `${word.english} does not exist in the list` })
-                setSearch({ show: true, english: item.english, tagalog: item.tagalog })
-            }else{
-                setMessage({ show: true, type: 0,  text: `${word.english} does not exist in the list` })
-            }
-        })
+        else
+        {
+            list.findIndex((item, index) => {
+                if(item.english == word.english)
+                {
+                    setMessage({ show: false, type: 0,  text: `${word.english} does not exist in the list` })
+                    setSearch({ show: true, english: item.english, tagalog: item.tagalog })
+                }
+                else
+                {
+                    word.english === '' ? setMessage({ show: true, type: 0, text: 'Search field is required' })
+                    : setMessage({ show: true, type: 0,  text: `${word.english} does not exist in the list` })
+                }
+            })
+        }
     }
 
     const onViewAll = () => {
@@ -146,7 +148,7 @@ function QuizB() {
 
                         <div className="mb-3">
                             <div className="card">
-                                <div className='card-header'><h5>Create My Vocabulary Note</h5></div>
+                                <div className='card-header text-center'><h5>Vocabulary Note</h5></div>
                                 <div className="card-body">
                                         <div className="mb-3">
                                             <label htmlFor="english-input" className="form-label">English:</label>
@@ -163,6 +165,9 @@ function QuizB() {
                                         <button onClick={onSearch} type="button" className="btn btn-info text-white">Search</button>
                                         <button onClick={onViewAll}type="button" className="btn btn-success">View All</button>
                                     </div>
+                                </div>
+                                <div className='card-footer'>
+                                    <div className='text-muted text-center mb-2'>Localstorage for storing data</div>
                                 </div>
                             </div>
                         </div>   
