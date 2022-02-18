@@ -12,7 +12,7 @@ function Navbar() {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <a className="nav-link" aria-current="page" href="#">Quiz-A</a>
+                        <Link className="nav-link" to={`/quiz-a`}>Quiz-A</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to={`/quiz-b`}>Quiz-B</Link>
