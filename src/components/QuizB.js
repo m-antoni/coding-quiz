@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AlertMessage from './AlertMessage';
+import SearchViewModal from './SearchViewModal';
 
 function QuizB() {
 
     const [word, setWord] = useState({ english: '', tagalog: '' });
     const [list, setList] = useState([])
     const [isView, setIsView] = useState(false);
-    const [message, setMessage] = useState({ show: false, type: null, text: "" })
+    const [message, setMessage] = useState({ show: false, type: null, text: "" });
+    const [search, setSearch] = useState({ show: false, english: "", tagalog: "" });
+
+    useEffect(() => {
+        
+    },[])
 
     const onSave = () => {
         let newList = [];
@@ -14,7 +20,7 @@ function QuizB() {
 
         if(word.english === '' || word.tagalog === ''){
             error = true;
-            setMessage({ show: true, type: 0, text: 'English and Tagalog fields are required!' })
+            setMessage({ show: true, type: 0, text: 'All fields are required' })
         }
 
 
@@ -43,27 +49,41 @@ function QuizB() {
 
     const onSearch = () => {
         let list = getListFromLocalStorage();
-
+        
         if(!list){
-            return alert('You do not have any vocabulary notes');
+            setMessage({ show: true, type: 0, text: "You do not have any vocabulary notes" })
         }
 
         list.findIndex((item, index) => {
             if(item.english == word.english){
-                setList([item]);
+                setMessage({ show: false, type: 0,  text: `${word.english} does not exist in the list` })
+                setSearch({ show: true, english: item.english, tagalog: item.tagalog })
+            }else{
+                setMessage({ show: true, type: 0,  text: `${word.english} does not exist in the list` })
             }
         })
     }
 
     const onViewAll = () => {
-        setMessage({ show: false, type: null, text: ""})
+        clearMessage();
         let list = getListFromLocalStorage();
 
         if(list){
-            setList(list);
+            setList(list.reverse());
         }
 
         setIsView(true)
+    }
+
+
+    const onDelete = (index) => {
+        let list = getListFromLocalStorage();
+
+        let updatedList = list.filter((item, _index) => _index !== index);
+
+        localStorage.setItem('list', JSON.stringify(updatedList))
+        
+        setList(updatedList)
     }
 
 
@@ -73,63 +93,76 @@ function QuizB() {
         else return null;
     }
 
-
     const onChangeInput = (e) => {
         setWord({ ...word, [e.target.name]: e.target.value });
     }
 
+    const clearMessage = () => setMessage({ show: false, type: null, text: ""})
+
     return (
         <div className="d-flex justify-content-center">
             <div>
+                <SearchViewModal show={search.show} search={search} onHide={() => setSearch({ ...search, show: false})}/>
                 <div>
                     { message.show && <AlertMessage type={message.type} message={message.text}/> }
-
                     {
-                        isView === true ? 
+                        (isView === true ) ? 
                             <>
                                 {
                                     list.length > 0 ? 
-                                    <div className="mb-5">
-                                        <h5>Show all my word list <button onClick={() => setIsView(false)} className="btn btn-primary btn-sm">Go Back</button></h5>
+                                    <div className="mb-5 vocabulary-list">
+                                        <h5>Vocabulary List &nbsp;&nbsp;<button onClick={() => setIsView(false)} className="btn btn-primary btn-sm">Go Back</button></h5>
+                                        
                                         <hr/>
-                                        <ul className="list-group">
-                                            {
-                                                list.map((list, index) => (
-                                                    <li className="list-group-item" key={index}>
-                                                        {index + 1})  <b>English:</b> {list.english}, <b>Tagalog:</b> {list.tagalog}
-                                                    </li>
-                                                ))
-                                            }
-                                        </ul>
+
+                                        <table className='table table-striped table-hover'>
+                                            <thead>
+                                                <th>English</th>
+                                                <th>Tagalog</th>
+                                                <th className='text-center'>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    list.map((list, index) => (
+                                                        <tr key={index}>
+                                                            <td>{list.english}</td>
+                                                            <td>{list.tagalog}</td>
+                                                            <td onClick={() => onDelete(index)} className='text-center'><button className="btn btn-sm btn-danger">DELETE</button></td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                     :
                                     <div>
                                         <div className="alert alert-danger">
-                                            You do not have any vocabulary please add. <a onClick={() => setIsView(false)} className="btn btn-primary btn-sm">Go Back</a>
+                                            You don't have vocabulary words, create <b className='text-primary'><a href="#" onClick={() => setIsView(false)}>here.</a></b>
                                         </div>
                                     </div>
                                 } 
                             </>
                         :
+
                         <div className="mb-3">
                             <div className="card">
-                                    <div className='card-header'>Create My Vocabulary Note</div>
-                                    <div className="card-body">
-                                    <div className="mb-3">
-                                    <label htmlFor="english-input" className="form-label">English</label>
-                                    <input value={word.english} onChange={onChangeInput} name="english" type="email" className="form-control" id="english-input"/>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="tagalog-input" className="form-label">Tagalog</label>
-                                    <input value={word.tagalog} onChange={onChangeInput} name="tagalog" type="text" className="form-control" id="tagalog-input"/>
-                                </div>
-                            
-                                <div className="my-4">
-                                    <button onClick={onSave} type="button" className="btn btn-primary">Save</button>&nbsp;
-                                    <button onClick={onSearch} type="button" className="btn btn-secondary">Search</button>&nbsp;
-                                    <button type="button" className="btn btn-danger">Delete</button>&nbsp;
-                                    <button onClick={onViewAll}type="button" className="btn btn-success">View All</button>&nbsp;
-                                </div>
+                                <div className='card-header'><h5>Create My Vocabulary Note</h5></div>
+                                <div className="card-body">
+                                        <div className="mb-3">
+                                            <label htmlFor="english-input" className="form-label">English:</label>
+                                            <input value={word.english} onChange={onChangeInput} name="english" type="email" className="form-control" id="english-input"/>
+                                            <small className='text-secondary'>type here your english word if you'd like to search</small>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="tagalog-input" className="form-label">Tagalog:</label>
+                                            <input value={word.tagalog} onChange={onChangeInput} name="tagalog" type="text" className="form-control" id="tagalog-input"/>
+                                        </div>
+                                
+                                    <div className="my-4 d-flex justify-content-between">
+                                        <button onClick={onSave} type="button" className="btn btn-primary">Save</button>
+                                        <button onClick={onSearch} type="button" className="btn btn-info text-white">Search</button>
+                                        <button onClick={onViewAll}type="button" className="btn btn-success">View All</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>   
