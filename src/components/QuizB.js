@@ -10,6 +10,7 @@ function QuizB() {
     const [message, setMessage] = useState({ show: false, type: null, text: "" });
     const [search, setSearch] = useState({ show: false, english: "", tagalog: "" });
 
+    // Save Button
     const onSave = () => {
         let newList = [];
         let error = false;
@@ -42,6 +43,7 @@ function QuizB() {
       
     }
 
+    // Search Button
     const onSearch = () => {
         let list = getListFromLocalStorage();
         
@@ -66,6 +68,7 @@ function QuizB() {
         }
     }
 
+    // View Button
     const onViewAll = () => {
         clearMessage();
         let list = getListFromLocalStorage();
@@ -77,7 +80,7 @@ function QuizB() {
         setIsView(true)
     }
 
-
+    // Delete Button
     const onDelete = (index) => {
         let list = getListFromLocalStorage();
 
@@ -88,17 +91,19 @@ function QuizB() {
         setList(updatedList)
     }
 
-
+    // Get the list from LocalStorage
     const getListFromLocalStorage = () => {
         const list = localStorage.getItem('list');
         if (list) return JSON.parse(list);
         else return null;
     }
 
+    // onChange Input
     const onChangeInput = (e) => {
         setWord({ ...word, [e.target.name]: e.target.value });
     }
 
+    // Clear Message
     const clearMessage = () => setMessage({ show: false, type: null, text: ""})
 
     return (

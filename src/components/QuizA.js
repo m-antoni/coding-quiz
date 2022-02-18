@@ -2,8 +2,10 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useState } from 'react';
 
+// Chart JS
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+//  Pie Chart Data
 let pieData = {
     labels: ['Grade A', 'Grade B','Grade C', 'Grade D', 'Grade E'],
     datasets: [{
@@ -13,7 +15,6 @@ let pieData = {
     }]
 };
 
-
 function QuizA() {
 
     const [pie, setPie] = useState(pieData)
@@ -21,35 +22,35 @@ function QuizA() {
     const onChangeInput = (e) => {
         
         const { name, value } = e.target;
-        let INT_VALUE = parseInt(value)
+        let INT_VALUE = parseInt(value);
         
+        // Updating the Pie Graph based on the input 
         pie.datasets[0].data[0] = (name == 'a' ? INT_VALUE : pie.datasets[0].data[0]); // A
         pie.datasets[0].data[1] = (name == 'b' ? INT_VALUE : pie.datasets[0].data[1]); // B
         pie.datasets[0].data[2] = (name == 'c' ? INT_VALUE : pie.datasets[0].data[2]); // C
         pie.datasets[0].data[3] = (name == 'd' ? INT_VALUE : pie.datasets[0].data[3]); // D
         pie.datasets[0].data[4] = (name == 'e' ? INT_VALUE : pie.datasets[0].data[4]); // E
         
-        // Getting SUM
-        const reducer = (accumulator, curr) => accumulator + curr;
-        let sum = pie.datasets[0].data.reduce(reducer);
-        // console.log(sum)
+        // Get the sum
+        let SUM = pie.datasets[0].data.reduce((accumulator, current) => accumulator + current);
         
-        // Percentage Formula: (value/sum)/100
-        let PERCENT_A = (pie.datasets[0].data[0] / sum) * 100 || 0; // A
-        let PERCENT_B = (pie.datasets[0].data[1] / sum) * 100 || 0; // B
-        let PERCENT_C = (pie.datasets[0].data[2] / sum) * 100 || 0; // C
-        let PERCENT_D = (pie.datasets[0].data[3] / sum) * 100 || 0; // D
-        let PERCENT_E = (pie.datasets[0].data[4] / sum) * 100 || 0; // E
+        // Percentage Formula: (value / sum ) * 100
+        let PERCENT_A = (pie.datasets[0].data[0] / SUM) * 100 || 0; // A
+        let PERCENT_B = (pie.datasets[0].data[1] / SUM) * 100 || 0; // B
+        let PERCENT_C = (pie.datasets[0].data[2] / SUM) * 100 || 0; // C
+        let PERCENT_D = (pie.datasets[0].data[3] / SUM) * 100 || 0; // D
+        let PERCENT_E = (pie.datasets[0].data[4] / SUM) * 100 || 0; // E
         
-        // Rounding Decimals 
+        // Rounding Decimals with formatted labels
         let ROUNDING_DECIMALS = [
-            `Grade A: ` + Number(Math.round(PERCENT_A+'e2')+'e-2') + ` %`,
-            `Grade B: ` + Number(Math.round(PERCENT_B+'e2')+'e-2') + ` %`,
-            `Grade C: ` + Number(Math.round(PERCENT_C+'e2')+'e-2') + ` %`,
-            `Grade D: ` + Number(Math.round(PERCENT_D+'e2')+'e-2') + ` %`,
-            `Grade E: ` + Number(Math.round(PERCENT_E+'e2')+'e-2') + ` %`,
+            `Grade A: ` + Number(Math.round(PERCENT_A+'e2')+'e-2') + `%`,
+            `Grade B: ` + Number(Math.round(PERCENT_B+'e2')+'e-2') + `%`,
+            `Grade C: ` + Number(Math.round(PERCENT_C+'e2')+'e-2') + `%`,
+            `Grade D: ` + Number(Math.round(PERCENT_D+'e2')+'e-2') + `%`,
+            `Grade E: ` + Number(Math.round(PERCENT_E+'e2')+'e-2') + `%`,
         ];
 
+        // Updating the labels
         let updatePieLabels = pie.labels.map((label, key) => label = ROUNDING_DECIMALS[key]);
 
         pie.labels = updatePieLabels;
@@ -62,10 +63,9 @@ function QuizA() {
         // testing values: 12,45,13,4,5,
         // console.log(PERCENT_A);
         // console.log(ROUNDING_DECIMALS);
-        // console.log(pie.labels[0])
     }
 
-    // prevent string and -1 values
+    // Prevent input String and -1 values
     const numberOnly = (evt) => {
         evt = (evt) ? evt : window.event;
         let charCode = (evt.which) ? evt.which : evt.keyCode;
