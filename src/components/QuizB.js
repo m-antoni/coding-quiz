@@ -54,7 +54,7 @@ function QuizB() {
         else
         {
             list.findIndex((item, index) => {
-                if(item.english == word.english)
+                if(item.english == word.english.toLocaleLowerCase())
                 {
                     setMessage({ show: false, type: 0,  text: `${word.english} does not exist in the list` })
                     setSearch({ show: true, english: item.english, tagalog: item.tagalog })
